@@ -2,23 +2,23 @@ import OrderForm from "@/components/OrderForm";
 
 const examples = [
   {
-    title: "Вывески и надписи",
-    description: "Буквы, логотипы и таблички из дерева или пластика.",
-    mark: "А",
-  },
-  {
-    title: "Декоративные панели",
-    description: "Узоры, решётки и элементы для оформления интерьера.",
-    mark: "◇",
-  },
-  {
-    title: "Детали для мебели",
-    description: "Фасады, накладки, шаблоны и детали нужной формы.",
+    title: "Фасады мебели",
+    description: "Фасады из МДФ, фанеры и массива с узорами, пазами и рельефом.",
     mark: "▱",
   },
   {
-    title: "Изделия по вашей идее",
-    description: "Поможем превратить фотографию или эскиз в готовую деталь.",
+    title: "Декоративные панели",
+    description: "Резные панели, решётки и элементы декора для дома и интерьера.",
+    mark: "◇",
+  },
+  {
+    title: "Таблички и вывески",
+    description: "Адресные таблички, надписи, буквы и логотипы из дерева или пластика.",
+    mark: "А",
+  },
+  {
+    title: "Детали по чертежу или фото",
+    description: "Изготовление деталей на заказ по размерам, эскизу или фотографии.",
     mark: "✦",
   },
 ];
@@ -59,16 +59,16 @@ const steps = [
 
 const trustPoints = [
   {
-    title: "От одной детали",
-    description: "Принимаем единичные частные заказы — небольшая задача тоже подходит.",
+    title: "По эскизу, фото или чертежу",
+    description: "Не обязательно готовить сложную документацию — начнём с того, что у вас есть.",
   },
   {
-    title: "Стоимость заранее",
-    description: "Сначала обсуждаем задачу и согласуем стоимость, затем начинаем работу.",
+    title: "Предварительное согласование",
+    description: "До начала работы уточним материал, размеры, количество и согласуем стоимость.",
   },
   {
-    title: "Можно без чертежа",
-    description: "Если есть только фотография, набросок или идея, поможем подготовить решение.",
+    title: "Точность изготовления",
+    description: "ЧПУ-обработка помогает точно повторять размеры, контуры, пазы и отверстия.",
   },
 ];
 
@@ -79,21 +79,22 @@ export default function Home() {
         <section className="grid gap-10 rounded-[32px] border border-[#d9d9d4] bg-white/90 p-8 shadow-[0_30px_90px_rgba(35,35,35,0.08)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-14">
           <div className="max-w-2xl">
             <span className="inline-flex rounded-full border border-[#dee2db] bg-[#f2f5ef] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.18em] text-[#4a6b41]">
-              Ярославль · частные заказы
+              Ярославль и область · частные заказы
             </span>
             <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-[-0.03em] text-[#111111] sm:text-5xl">
-              ЧПУ-фрезеровка дерева и пластика в Ярославле
+              Фрезеровка дерева и пластика на ЧПУ
             </h1>
             <p className="mt-6 max-w-xl text-lg leading-8 text-[#4d4d4b] sm:text-xl">
-              Изготовим одну деталь или небольшой заказ. Можно обратиться с чертежом,
-              эскизом, фотографией или просто идеей — поможем разобраться с подготовкой.
+              Изготовим точно по вашим размерам — от одной детали до небольшой серии.
+              Работаем с частными заказами в Ярославле и Ярославской области, поможем
+              превратить чертёж, эскиз или фотографию в готовое изделие.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#order"
-                className="inline-flex h-14 items-center justify-center rounded-full bg-[#4f7f3f] px-8 text-base font-semibold text-white transition hover:bg-[#3e6b33]"
+                className="inline-flex h-14 items-center justify-center rounded-full bg-[#4f7f3f] px-8 text-base font-semibold text-white shadow-[0_12px_28px_rgba(79,127,63,0.28)] transition hover:-translate-y-0.5 hover:bg-[#3e6b33] hover:shadow-[0_16px_32px_rgba(79,127,63,0.34)]"
               >
-                Обсудить заказ
+                Рассчитать стоимость заказа
               </a>
               <a
                 href="#examples"
@@ -132,13 +133,14 @@ export default function Home() {
         <section id="examples" className="scroll-mt-8">
           <div className="max-w-2xl">
             <p className="text-sm uppercase tracking-[0.3em] text-[#5a5a58]">
-              Примеры задач
+              Изделия на заказ
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
-              Что можно изготовить
+              Что изготавливаем
             </h2>
             <p className="mt-5 text-base leading-7 text-[#545454]">
-              Это не полный список. Если вашего изделия здесь нет, опишите задачу в заявке.
+              Выполняем изготовление деталей на заказ для дома, мебели, ремонта и декора.
+              Если нужного изделия нет в списке, пришлите фото или опишите задачу.
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -163,11 +165,12 @@ export default function Home() {
               Услуги и материалы
             </p>
             <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
-              Фрезеровка под вашу задачу
+              Фрезеровка дерева и пластика
             </h2>
             <p className="mt-5 text-base leading-7 text-[#545454]">
-              Вырезаем детали, делаем пазы, отверстия, рельеф и надписи. Материал и способ
-              обработки подбираем после обсуждения изделия.
+              Фрезеровка дерева подходит для фасадов, декора и мебельных деталей, а
+              фрезеровка пластика — для табличек, шаблонов и технических элементов.
+              Вырезаем контуры, делаем пазы, отверстия, рельеф и надписи.
             </p>
           </div>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -213,10 +216,10 @@ export default function Home() {
 
         <section className="rounded-[32px] border border-[#dde1d8] bg-white p-8 shadow-[0_30px_80px_rgba(35,35,35,0.06)] sm:p-10">
           <p className="text-sm uppercase tracking-[0.28em] text-[#5a5a58]">
-            Удобно для частного заказа
+            Почему нам доверяют
           </p>
           <h2 className="mt-3 max-w-2xl text-3xl font-semibold text-[#111111] sm:text-4xl">
-            Можно начать с небольшой задачи
+            Понятный результат до начала работы
           </h2>
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {trustPoints.map((item) => (
@@ -254,7 +257,7 @@ export default function Home() {
             <div>
               <p className="text-sm uppercase tracking-[0.28em] text-[#5a5a58]">Контакты</p>
               <h2 className="mt-3 text-3xl font-semibold text-[#111111] sm:text-4xl">
-                ЧПУ-фрезеровка в Ярославле
+                Фрезеровка ЧПУ в Ярославле и области
               </h2>
               <p className="mt-5 max-w-xl text-base leading-7 text-[#575755]">
                 Свяжитесь удобным способом или отправьте заявку выше, чтобы обсудить задачу.
