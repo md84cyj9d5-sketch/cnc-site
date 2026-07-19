@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 
 type Status = "idle" | "pending" | "success" | "error";
 
@@ -40,9 +41,13 @@ export default function OrderForm() {
 
   return (
     <form
-        onSubmit={handleSubmit}
-        className="space-y-4 rounded-[32px] border border-[#d9d9d4] bg-white p-10 shadow-[0_20px_50px_rgba(35,35,35,0.05)]"
-      >
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-[32px] border border-[#d9d9d4] bg-white p-6 shadow-[0_20px_50px_rgba(35,35,35,0.05)] sm:p-10"
+    >
+      <p className="rounded-[18px] bg-[#f2f5ef] p-4 text-sm leading-6 text-[#3f493c]">
+        Чем подробнее вы опишете задачу, тем точнее получится предварительная оценка.
+      </p>
+
       <label className="block text-sm font-medium text-[#2c2c2a]">
         Имя
         <input
@@ -71,11 +76,9 @@ export default function OrderForm() {
           name="preferredContact"
           className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
         >
-          <option value="">Не важно</option>
+          <option value="">Выберите способ связи</option>
           <option value="Телефон">Телефон</option>
-          <option value="WhatsApp">WhatsApp</option>
           <option value="Telegram">Telegram</option>
-          <option value="Email">Email</option>
         </select>
       </label>
 
@@ -90,6 +93,7 @@ export default function OrderForm() {
           <option value="МДФ">МДФ</option>
           <option value="Массив дерева">Массив дерева</option>
           <option value="Пластик">Пластик</option>
+          <option value="Другой">Другой</option>
         </select>
       </label>
 
@@ -116,6 +120,20 @@ export default function OrderForm() {
       </div>
 
       <label className="block text-sm font-medium text-[#2c2c2a]">
+        Что у вас уже есть
+        <select
+          name="sourceMaterial"
+          className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
+        >
+          <option value="">Выберите подходящий вариант</option>
+          <option value="Чертёж">Чертёж</option>
+          <option value="Эскиз">Эскиз</option>
+          <option value="Фотография">Фотография</option>
+          <option value="Только идея">Только идея</option>
+        </select>
+      </label>
+
+      <label className="block text-sm font-medium text-[#2c2c2a]">
         Описание заказа
         <textarea
           name="description"
@@ -140,16 +158,30 @@ export default function OrderForm() {
         Допустимые файлы: PDF, JPG, JPEG, PNG, DXF, SVG, STEP, STP, STL, ZIP. Максимальный размер 20 МБ.
       </div>
 
-      <button
-        type="submit"
-        disabled={status === "pending"}
-        className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[#4f7f3f] px-6 text-base font-semibold text-white transition hover:bg-[#3e6b33] disabled:cursor-not-allowed disabled:opacity-70"
-      >
-        {status === "pending" ? "Отправляем..." : "Отправить заявку"}
-      </button>
+      <div className="grid gap-3 sm:grid-cols-[minmax(220px,0.9fr)_1.1fr] sm:items-center">
+        <button
+          type="submit"
+          disabled={status === "pending"}
+          className="inline-flex h-14 w-full items-center justify-center rounded-full bg-[#4f7f3f] px-6 text-base font-semibold text-white transition hover:bg-[#3e6b33] disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {status === "pending" ? "Отправляем..." : "Отправить заявку"}
+        </button>
+        <p className="text-xs leading-5 text-[#626260]">
+          Нажимая кнопку, вы соглашаетесь на обработку персональных данных.
+          <br />
+          <Link
+            href="/privacy"
+            className="font-medium text-[#35582d] underline decoration-[#8ca582] underline-offset-4 hover:text-[#294724]"
+          >
+            Политика конфиденциальности
+          </Link>
+        </p>
+      </div>
 
       {message ? (
         <div
+          aria-live="polite"
+          role="status"
           className={`rounded-2xl border px-4 py-3 text-sm ${
             status === "success"
               ? "border-[#8ec77b] bg-[#ecf7e7] text-[#2a5c23]"

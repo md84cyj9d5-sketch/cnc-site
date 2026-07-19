@@ -1,4 +1,6 @@
 import OrderForm from "@/components/OrderForm";
+import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 const examples = [
   {
@@ -265,22 +267,38 @@ export default function Home() {
             </div>
             <div className="space-y-4 rounded-[28px] border border-[#e5e5e1] bg-[#f7f8f4] p-6">
               <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Телефон</p>
-                <p className="mt-2 text-lg font-semibold text-[#222222]">+7 (999) 123-45-67</p>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Название</p>
+                <p className="mt-2 text-lg font-semibold text-[#222222]">{siteConfig.name}</p>
               </div>
               <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Email</p>
-                <p className="mt-2 break-all text-lg font-semibold text-[#222222]">
-                  cnc.yaroslavl@example.com
-                </p>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Телефон</p>
+                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.phone}</p>
+              </div>
+              <div>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Telegram</p>
+                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.telegram}</p>
               </div>
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Город</p>
-                <p className="mt-2 text-base text-[#4a4a48]">Ярославль</p>
+                <p className="mt-2 text-base text-[#4a4a48]">{siteConfig.city}</p>
+              </div>
+              <div>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Режим работы</p>
+                <p className="mt-2 text-base text-[#4a4a48]">{siteConfig.workingHours}</p>
               </div>
             </div>
           </div>
         </section>
+
+        <footer className="flex flex-col gap-3 border-t border-[#d9d9d4] py-2 text-sm text-[#5f5f5d] sm:flex-row sm:items-center sm:justify-between">
+          <p>{siteConfig.name}</p>
+          <Link
+            href="/privacy"
+            className="font-medium text-[#35582d] underline decoration-[#9caf94] underline-offset-4 hover:text-[#294724]"
+          >
+            Политика конфиденциальности
+          </Link>
+        </footer>
       </div>
     </main>
   );
