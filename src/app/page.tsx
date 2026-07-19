@@ -78,6 +78,34 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#f7f7f3] text-[#232323] font-sans">
       <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-16 px-6 py-8 sm:gap-20 sm:px-10 sm:py-10 lg:px-16">
+        <header className="flex flex-col gap-4 rounded-[24px] border border-[#d9d9d4] bg-white/90 px-5 py-4 shadow-[0_12px_30px_rgba(35,35,35,0.05)] sm:flex-row sm:items-center sm:justify-between">
+          <a href="#" className="text-base font-semibold text-[#1d1d1b]">
+            CNC · Ярославль
+          </a>
+          <nav className="flex flex-wrap items-center gap-x-5 gap-y-3 text-sm" aria-label="Контакты и навигация">
+            <a href="#portfolio" className="font-medium text-[#4f4f4d] transition hover:text-[#35582d]">
+              Наши работы
+            </a>
+            <a href={siteConfig.phoneHref} className="font-semibold text-[#35582d]">
+              {siteConfig.phone}
+            </a>
+            <a
+              href={siteConfig.telegramHref}
+              target="_blank"
+              rel="noreferrer"
+              className="font-semibold text-[#35582d]"
+            >
+              Telegram
+            </a>
+            <a
+              href="#order"
+              className="inline-flex h-10 items-center justify-center rounded-full bg-[#4f7f3f] px-5 font-semibold text-white transition hover:bg-[#3e6b33]"
+            >
+              Обсудить заказ
+            </a>
+          </nav>
+        </header>
+
         <section className="grid gap-10 rounded-[32px] border border-[#d9d9d4] bg-white/90 p-8 shadow-[0_30px_90px_rgba(35,35,35,0.08)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-14">
           <div className="max-w-2xl">
             <span className="inline-flex rounded-full border border-[#dee2db] bg-[#f2f5ef] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.18em] text-[#4a6b41]">
@@ -102,7 +130,7 @@ export default function Home() {
                 href="#examples"
                 className="inline-flex h-14 items-center justify-center rounded-full border border-[#bfc8b8] bg-[#f6f7f2] px-8 text-base font-semibold text-[#35582d] transition hover:bg-[#edf2e8]"
               >
-                Посмотреть примеры
+                Что изготавливаем
               </a>
             </div>
           </div>
@@ -158,6 +186,49 @@ export default function Home() {
                 <p className="mt-3 text-sm leading-6 text-[#61615f]">{item.description}</p>
               </article>
             ))}
+          </div>
+        </section>
+
+        <section id="portfolio" className="scroll-mt-8 rounded-[32px] border border-[#d9d9d4] bg-[#eef2e9] p-8 sm:p-10">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-sm uppercase tracking-[0.3em] text-[#5a5a58]">Портфолио</p>
+              <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
+                Наши работы
+              </h2>
+              <p className="mt-5 text-base leading-7 text-[#545454]">
+                Раздел подготовлен для фотографий готовых изделий. Добавьте реальные снимки работ,
+                чтобы посетитель мог сразу оценить качество и диапазон задач.
+              </p>
+            </div>
+            <a
+              href="#order"
+              className="inline-flex h-12 shrink-0 items-center justify-center rounded-full border border-[#9fac98] bg-white px-6 text-sm font-semibold text-[#35582d] transition hover:bg-[#f7f8f4]"
+            >
+              Хочу похожее изделие
+            </a>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {["Мебельные фасады", "Декоративная панель", "Точная деталь по чертежу"].map(
+              (title, index) => (
+                <article
+                  key={title}
+                  className="group overflow-hidden rounded-[26px] border border-[#d6ddd1] bg-white shadow-[0_14px_30px_rgba(35,35,35,0.06)]"
+                >
+                  <div className="flex aspect-[4/3] items-center justify-center bg-[linear-gradient(135deg,#e4eade_0%,#f8f9f5_52%,#dce6d5_100%)]">
+                    <div className="flex h-28 w-28 rotate-3 items-center justify-center rounded-[28px] border border-[#aebda6] bg-white/65 text-4xl font-semibold text-[#4f7f3f] shadow-[0_16px_35px_rgba(79,127,63,0.12)]">
+                      {index === 0 ? "▱" : index === 1 ? "◇" : "✦"}
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold text-[#1c1c1a]">{title}</h3>
+                    <p className="mt-2 text-sm leading-6 text-[#61615f]">
+                      Место для фотографии выполненной работы.
+                    </p>
+                  </div>
+                </article>
+              ),
+            )}
           </div>
         </section>
 
@@ -272,11 +343,20 @@ export default function Home() {
               </div>
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Телефон</p>
-                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.phone}</p>
+                <a href={siteConfig.phoneHref} className="mt-2 block text-base font-semibold text-[#35582d]">
+                  {siteConfig.phone}
+                </a>
               </div>
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Telegram</p>
-                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.telegram}</p>
+                <a
+                  href={siteConfig.telegramHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 block text-base font-semibold text-[#35582d]"
+                >
+                  {siteConfig.telegram}
+                </a>
               </div>
               <div>
                 <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Город</p>

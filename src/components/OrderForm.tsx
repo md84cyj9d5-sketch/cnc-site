@@ -71,18 +71,6 @@ export default function OrderForm() {
       </label>
 
       <label className="block text-sm font-medium text-[#2c2c2a]">
-        Предпочтительный способ связи
-        <select
-          name="preferredContact"
-          className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
-        >
-          <option value="">Выберите способ связи</option>
-          <option value="Телефон">Телефон</option>
-          <option value="Telegram">Telegram</option>
-        </select>
-      </label>
-
-      <label className="block text-sm font-medium text-[#2c2c2a]">
         Материал
         <select
           name="material"
@@ -97,42 +85,6 @@ export default function OrderForm() {
         </select>
       </label>
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-[#2c2c2a]">
-          Размеры
-          <input
-            name="dimensions"
-            type="text"
-            placeholder="Длина × ширина × высота"
-            className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
-          />
-        </label>
-        <label className="block text-sm font-medium text-[#2c2c2a]">
-          Количество
-          <input
-            name="quantity"
-            type="number"
-            min="1"
-            placeholder="1"
-            className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
-          />
-        </label>
-      </div>
-
-      <label className="block text-sm font-medium text-[#2c2c2a]">
-        Что у вас уже есть
-        <select
-          name="sourceMaterial"
-          className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
-        >
-          <option value="">Выберите подходящий вариант</option>
-          <option value="Чертёж">Чертёж</option>
-          <option value="Эскиз">Эскиз</option>
-          <option value="Фотография">Фотография</option>
-          <option value="Только идея">Только идея</option>
-        </select>
-      </label>
-
       <label className="block text-sm font-medium text-[#2c2c2a]">
         Описание заказа
         <textarea
@@ -143,6 +95,59 @@ export default function OrderForm() {
           className="mt-2 w-full rounded-3xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 py-3 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
         />
       </label>
+
+      <details className="rounded-[20px] border border-[#d9d9d4] bg-[#f7f8f3] p-4">
+        <summary className="cursor-pointer text-sm font-semibold text-[#35582d]">
+          Уточнить параметры заказа
+        </summary>
+        <div className="mt-4 space-y-4">
+          <label className="block text-sm font-medium text-[#2c2c2a]">
+            Предпочтительный способ связи
+            <select
+              name="preferredContact"
+              className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-white px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
+            >
+              <option value="">Не выбрано</option>
+              <option value="Телефон">Телефон</option>
+              <option value="Telegram">Telegram</option>
+            </select>
+          </label>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block text-sm font-medium text-[#2c2c2a]">
+              Размеры
+              <input
+                name="dimensions"
+                type="text"
+                placeholder="Длина × ширина × высота"
+                className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-white px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
+              />
+            </label>
+            <label className="block text-sm font-medium text-[#2c2c2a]">
+              Количество
+              <input
+                name="quantity"
+                type="number"
+                min="1"
+                placeholder="1"
+                className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-white px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
+              />
+            </label>
+          </div>
+          <label className="block text-sm font-medium text-[#2c2c2a]">
+            Что у вас уже есть
+            <select
+              name="sourceMaterial"
+              className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-white px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
+            >
+              <option value="">Не выбрано</option>
+              <option value="Чертёж">Чертёж</option>
+              <option value="Эскиз">Эскиз</option>
+              <option value="Фотография">Фотография</option>
+              <option value="Только идея">Только идея</option>
+            </select>
+          </label>
+        </div>
+      </details>
 
       <label className="block text-sm font-medium text-[#2c2c2a]">
         Файл (необязательно)
