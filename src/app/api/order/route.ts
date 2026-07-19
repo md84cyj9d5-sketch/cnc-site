@@ -28,6 +28,18 @@ function getExtension(filename: string): string {
   return match ? match[0] : "";
 }
 
+function formatTelegramValue(value: FormDataEntryValue | null, fallback = "Не указано"): string {
+  if (typeof value !== "string" || !value.trim()) {
+    return fallback;
+  }
+
+  return value
+    .trim()
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
 async function sendTelegramMessage(text: string) {
   const token = getEnv("TELEGRAM_BOT_TOKEN");
   const chatId = getEnv("TELEGRAM_CHAT_ID");
@@ -80,6 +92,7 @@ export async function POST(request: NextRequest) {
   const material = formData.get("material") || "Не указано";
   const dimensions = formData.get("dimensions") || "Не указано";
   const quantity = formData.get("quantity") || "Не указано";
+  const sourceMaterial = formData.get("sourceMaterial") || "Не указано";
   const description = formData.get("description");
   const file = formData.get("file");
 
@@ -112,13 +125,14 @@ export async function POST(request: NextRequest) {
 
   const message = [
     `<b>Новая заявка на фрезеровку</b>`,
-    `<b>Имя:</b> ${name}`,
-    `<b>Телефон:</b> ${phone}`,
-    `<b>Предпочтительный способ связи:</b> ${preferredContact}`,
-    `<b>Материал:</b> ${material}`,
-    `<b>Размеры:</b> ${dimensions}`,
-    `<b>Количество:</b> ${quantity}`,
-    `<b>Описание:</b> ${description}`,
+    `<b>Имя:</b> ${formatTelegramValue(name)}`,
+    `<b>Телефон:</b> ${formatTelegramValue(phone)}`,
+    `<b>Предпочтительный способ связи:</b> ${formatTelegramValue(preferredContact)}`,
+    `<b>Материал:</b> ${formatTelegramValue(material)}`,
+    `<b>Примерные размеры:</b> ${formatTelegramValue(dimensions)}`,
+    `<b>Количество деталей:</b> ${formatTelegramValue(quantity)}`,
+    `<b>У клиента есть:</b> ${formatTelegramValue(sourceMaterial)}`,
+    `<b>Описание:</b> ${formatTelegramValue(description)}`,
   ].join("\n");
 
   try {
