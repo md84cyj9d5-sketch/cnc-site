@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
   const message = [
     `<b>Новая заявка на фрезеровку</b>`,
     `<b>Имя:</b> ${formatTelegramValue(name)}`,
-    `<b>Телефон:</b> ${formatTelegramValue(phone)}`,
+    `<b>Телефон / Telegram:</b> ${formatTelegramValue(phone)}`,
     `<b>Предпочтительный способ связи:</b> ${formatTelegramValue(preferredContact)}`,
     `<b>Материал:</b> ${formatTelegramValue(material)}`,
     `<b>Примерные размеры:</b> ${formatTelegramValue(dimensions)}`,
