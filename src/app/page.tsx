@@ -366,6 +366,32 @@ export default function Home() {
                 <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Режим работы</p>
                 <p className="mt-2 text-base text-[#4a4a48]">{siteConfig.workingHours}</p>
               </div>
+              <div>
+                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">
+                  Адрес на карте
+                </p>
+                <a
+                  href={siteConfig.mapHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-2 inline-flex items-center gap-2 text-base font-semibold text-[#35582d] underline decoration-[#9eae99] underline-offset-4 transition hover:text-[#274321]"
+                >
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    className="h-5 w-5 shrink-0 fill-none stroke-current"
+                    strokeWidth="1.8"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"
+                    />
+                    <circle cx="12" cy="10" r="2.5" />
+                  </svg>
+                  {siteConfig.city}
+                </a>
+              </div>
             </div>
           </div>
         </section>
