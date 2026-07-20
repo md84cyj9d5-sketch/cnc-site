@@ -7,6 +7,37 @@ import { upload } from "@vercel/blob/client";
 type Status = "idle" | "pending" | "success" | "error";
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
+function formatRussianPhone(value: string): string {
+  let digits = value.replace(/\D/g, "");
+
+  if (digits.startsWith("8")) {
+    digits = `7${digits.slice(1)}`;
+  } else if (!digits.startsWith("7")) {
+    digits = `7${digits}`;
+  }
+
+  const phone = digits.slice(1, 11);
+  let formatted = "+7";
+
+  if (phone.length > 0) {
+    formatted += ` (${phone.slice(0, 3)}`;
+  }
+  if (phone.length >= 3) {
+    formatted += ")";
+  }
+  if (phone.length > 3) {
+    formatted += ` ${phone.slice(3, 6)}`;
+  }
+  if (phone.length > 6) {
+    formatted += `-${phone.slice(6, 8)}`;
+  }
+  if (phone.length > 8) {
+    formatted += `-${phone.slice(8, 10)}`;
+  }
+
+  return formatted;
+}
+
 async function readResponse(response: Response) {
   const text = await response.text();
 
@@ -96,9 +127,16 @@ export default function OrderForm() {
         Телефон
         <input
           name="phone"
-          type="text"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           required
-          placeholder="Телефон"
+          minLength={18}
+          maxLength={18}
+          placeholder="+7 (___) ___-__-__"
+          onChange={(event) => {
+            event.currentTarget.value = formatRussianPhone(event.currentTarget.value);
+          }}
           className="mt-2 h-12 w-full rounded-2xl border border-[#d8d8d4] bg-[#fbfcf9] px-4 text-sm text-[#232323] outline-none transition focus:border-[#4f7f3f]"
         />
       </label>
