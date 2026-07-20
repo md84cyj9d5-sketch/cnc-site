@@ -4,11 +4,11 @@
   --canvas: #f4f1ec;
   --ink: #24231f;
   --muted: #66625b;
-  --faint: #908a81;
+  --faint: #6f6a62;
   --line: #ddd7ce;
   --wood: #c79862;
   --wood-light: #dfba8f;
-  --wood-dark: #936538;
+  --wood-dark: #825129;
 }
 
 @theme inline {
@@ -30,7 +30,7 @@ body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var
 ::selection { background: #ddc4a6; color: #211d18; }
 
 .page-shell { width: min(100% - 2rem, 80rem); margin-inline: auto; }
-.section-space { padding-block: clamp(5rem, 9vw, 8.5rem); }
+.section-space { padding-block: clamp(4rem, 9vw, 8.5rem); }
 .eyebrow { font-family: var(--font-roboto-mono), monospace; font-size: .7rem; font-weight: 600; line-height: 1.4; letter-spacing: .16em; text-transform: uppercase; color: var(--wood-dark); }
 .nav-link { transition: color 180ms ease; }
 .nav-link:hover { color: var(--ink); }

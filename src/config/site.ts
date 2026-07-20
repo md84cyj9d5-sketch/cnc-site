@@ -1,5 +1,6 @@
 export const siteConfig = {
   name: "CNC-фрезеровка в Ярославле",
+  url: "https://cnc-site-eight.vercel.app",
   phone: "+7 901 299 6988",
   phoneHref: "tel:+79012996988",
   telegram: "@cnc_frezer76",

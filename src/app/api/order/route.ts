@@ -1,4 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  isAllowedValue,
+  isContactMethod,
+  isValidContact,
+  MATERIALS,
+  ORDER_LIMITS,
+  SOURCE_MATERIALS,
+} from "@/lib/orderValidation";
+import { consumeRateLimit, getClientIp } from "@/lib/rateLimit";
 
 const ALLOWED_EXTENSIONS = [
   ".pdf",
@@ -24,6 +33,11 @@ function getExtension(filename: string): string {
   const lower = filename.toLowerCase();
   const match = lower.match(/\.[^\.]+$/);
   return match ? match[0] : "";
+}
+
+function getStringField(formData: FormData, name: string): string {
+  const value = formData.get(name);
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function formatTelegramValue(value: FormDataEntryValue | null, fallback = "Не указано"): string {
@@ -76,36 +90,91 @@ function getBlobUrl(value: FormDataEntryValue | null): string | null {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimit = consumeRateLimit(`order:${getClientIp(request)}`, 6, 10 * 60 * 1000);
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      { error: "Слишком много заявок. Попробуйте снова немного позже." },
+      { status: 429, headers: { "Retry-After": String(rateLimit.retryAfterSeconds) } },
+    );
+  }
+
   const contentType = request.headers.get("content-type") || "";
   if (!contentType.includes("multipart/form-data")) {
     return NextResponse.json({ error: "Неверный тип запроса" }, { status: 400 });
   }
 
   const formData = await request.formData();
-  const name = formData.get("name");
-  const phone = formData.get("phone");
-  const preferredContact = formData.get("preferredContact") || "Не указано";
-  const material = formData.get("material") || "Не указано";
-  const dimensions = formData.get("dimensions") || "Не указано";
-  const quantity = formData.get("quantity") || "Не указано";
-  const sourceMaterial = formData.get("sourceMaterial") || "Не указано";
-  const description = formData.get("description");
-  const fileUrl = getBlobUrl(formData.get("fileUrl"));
-  const fileName = formData.get("fileName");
+  const honeypot = formData.get("website");
+  if (typeof honeypot === "string" && honeypot.trim()) {
+    return NextResponse.json({ success: true });
+  }
 
-  if (!name || typeof name !== "string" || !name.trim()) {
+  const name = getStringField(formData, "name");
+  const phone = getStringField(formData, "phone");
+  const preferredContactValue = getStringField(formData, "preferredContact") || "Телефон";
+  const materialValue = getStringField(formData, "material");
+  const dimensions = getStringField(formData, "dimensions");
+  const quantityValue = getStringField(formData, "quantity");
+  const sourceMaterialValue = getStringField(formData, "sourceMaterial");
+  const description = getStringField(formData, "description");
+  const fileUrl = getBlobUrl(formData.get("fileUrl"));
+  const fileName = getStringField(formData, "fileName");
+
+  if (!name) {
     return NextResponse.json({ error: "Поле имя обязательно" }, { status: 400 });
   }
-
-  if (!phone || typeof phone !== "string" || !phone.trim()) {
-    return NextResponse.json({ error: "Поле телефон обязательно" }, { status: 400 });
+  if (name.length > ORDER_LIMITS.name) {
+    return NextResponse.json({ error: "Имя слишком длинное" }, { status: 400 });
   }
 
-  if (!description || typeof description !== "string" || !description.trim()) {
+  if (!isContactMethod(preferredContactValue)) {
+    return NextResponse.json({ error: "Выберите способ связи" }, { status: 400 });
+  }
+  if (!phone || phone.length > ORDER_LIMITS.contact || !isValidContact(phone, preferredContactValue)) {
+    const error = preferredContactValue === "Телефон"
+      ? "Укажите телефон полностью"
+      : "Укажите Telegram в формате @username";
+    return NextResponse.json({ error }, { status: 400 });
+  }
+
+  if (!description) {
     return NextResponse.json({ error: "Поле описание заказа обязательно" }, { status: 400 });
   }
+  if (description.length > ORDER_LIMITS.description) {
+    return NextResponse.json({ error: "Описание задачи слишком длинное" }, { status: 400 });
+  }
 
-  if (fileName && typeof fileName === "string" && fileName.trim()) {
+  if (materialValue && !isAllowedValue(materialValue, MATERIALS)) {
+    return NextResponse.json({ error: "Неизвестный материал" }, { status: 400 });
+  }
+  if (sourceMaterialValue && !isAllowedValue(sourceMaterialValue, SOURCE_MATERIALS)) {
+    return NextResponse.json({ error: "Неизвестный тип исходных данных" }, { status: 400 });
+  }
+  if (dimensions.length > ORDER_LIMITS.dimensions) {
+    return NextResponse.json({ error: "Описание размеров слишком длинное" }, { status: 400 });
+  }
+
+  let quantity = "Не указано";
+  if (quantityValue) {
+    const parsedQuantity = Number(quantityValue);
+    if (!Number.isInteger(parsedQuantity) || parsedQuantity < 1 || parsedQuantity > ORDER_LIMITS.quantity) {
+      return NextResponse.json({ error: "Укажите корректное количество деталей" }, { status: 400 });
+    }
+    quantity = String(parsedQuantity);
+  }
+
+  const preferredContact = preferredContactValue;
+  const material = materialValue || "Не указано";
+  const sourceMaterial = sourceMaterialValue || "Не указано";
+
+  if (Boolean(fileUrl) !== Boolean(fileName)) {
+    return NextResponse.json({ error: "Не удалось подтвердить загруженный файл" }, { status: 400 });
+  }
+
+  if (fileName) {
+    if (fileName.length > ORDER_LIMITS.fileName) {
+      return NextResponse.json({ error: "Имя файла слишком длинное" }, { status: 400 });
+    }
     const extension = getExtension(fileName);
     if (!ALLOWED_EXTENSIONS.includes(extension)) {
       return NextResponse.json({ error: `Недопустимый формат файла: ${extension}` }, { status: 400 });
@@ -122,7 +191,7 @@ export async function POST(request: NextRequest) {
     `<b>Телефон / Telegram:</b> ${formatTelegramValue(phone)}`,
     `<b>Предпочтительный способ связи:</b> ${formatTelegramValue(preferredContact)}`,
     `<b>Материал:</b> ${formatTelegramValue(material)}`,
-    `<b>Примерные размеры:</b> ${formatTelegramValue(dimensions)}`,
+    `<b>Примерные размеры:</b> ${formatTelegramValue(dimensions || null)}`,
     `<b>Количество деталей:</b> ${formatTelegramValue(quantity)}`,
     `<b>У клиента есть:</b> ${formatTelegramValue(sourceMaterial)}`,
     `<b>Описание:</b> ${formatTelegramValue(description)}`,
@@ -134,8 +203,11 @@ export async function POST(request: NextRequest) {
   try {
     await sendTelegramMessage(message);
   } catch (error) {
-    const errorText = error instanceof Error ? error.message : "Ошибка отправки в Telegram";
-    return NextResponse.json({ error: errorText }, { status: 500 });
+    console.error("Telegram order delivery failed", error);
+    return NextResponse.json(
+      { error: "Не удалось отправить заявку. Попробуйте позже или напишите нам в Telegram." },
+      { status: 502 },
+    );
   }
 
   return NextResponse.json({ success: true });
