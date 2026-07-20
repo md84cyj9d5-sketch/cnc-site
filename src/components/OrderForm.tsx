@@ -5,6 +5,7 @@ import Link from "next/link";
 import { upload } from "@vercel/blob/client";
 
 type Status = "idle" | "pending" | "success" | "error";
+type ContactMethod = "Телефон" | "Telegram";
 type ApiResponse = { error?: string; success?: boolean };
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
@@ -30,10 +31,6 @@ function formatRussianPhone(value: string): string {
   return formatted;
 }
 
-function formatContact(value: string): string {
-  return /^[+\d()\s-]*$/.test(value) ? formatRussianPhone(value) : value;
-}
-
 async function readResponse(response: Response): Promise<ApiResponse> {
   const text = await response.text();
   try {
@@ -49,6 +46,7 @@ async function readResponse(response: Response): Promise<ApiResponse> {
 export default function OrderForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [message, setMessage] = useState("");
+  const [contactMethod, setContactMethod] = useState<ContactMethod>("Телефон");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -96,8 +94,39 @@ export default function OrderForm() {
         </label>
 
         <label className="block text-sm font-semibold text-ink">
-          Телефон или Telegram <span className="text-wood-dark" aria-hidden="true">*</span>
-          <input name="phone" type="text" autoComplete="tel" required placeholder="+7 (...) или @username" disabled={pending} onChange={(event) => { event.currentTarget.value = formatContact(event.currentTarget.value); }} className={fieldClass} />
+          Способ связи
+          <select
+            name="preferredContact"
+            value={contactMethod}
+            disabled={pending}
+            className={fieldClass}
+            onChange={(event) => setContactMethod(event.currentTarget.value as ContactMethod)}
+          >
+            <option value="Телефон">Телефон</option>
+            <option value="Telegram">Telegram</option>
+          </select>
+        </label>
+
+        <label className="block text-sm font-semibold text-ink sm:col-span-2">
+          {contactMethod === "Телефон" ? "Номер телефона" : "Имя пользователя в Telegram"}{" "}
+          <span className="text-wood-dark" aria-hidden="true">*</span>
+          <input
+            key={contactMethod}
+            name="phone"
+            type={contactMethod === "Телефон" ? "tel" : "text"}
+            inputMode={contactMethod === "Телефон" ? "tel" : "text"}
+            autoComplete={contactMethod === "Телефон" ? "tel" : "off"}
+            autoCapitalize="none"
+            spellCheck={false}
+            enterKeyHint="next"
+            required
+            minLength={contactMethod === "Телефон" ? 18 : 2}
+            maxLength={contactMethod === "Телефон" ? 18 : 64}
+            placeholder={contactMethod === "Телефон" ? "+7 (___) ___-__-__" : "@username"}
+            disabled={pending}
+            onChange={contactMethod === "Телефон" ? (event) => { event.currentTarget.value = formatRussianPhone(event.currentTarget.value); } : undefined}
+            className={fieldClass}
+          />
         </label>
 
         <label className="block text-sm font-semibold text-ink">

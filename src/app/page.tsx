@@ -178,7 +178,7 @@ export default function Home() {
       <footer className="bg-[#171816] py-12 text-white/62">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
           <div><p className="text-lg font-semibold text-white">CNC · Ярославль</p><p className="mt-3 max-w-sm text-sm leading-6">ЧПУ-фрезеровка фанеры, МДФ, массива дерева и пластика для частных заказчиков.</p></div>
-          <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/38">Контакты</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href={siteConfig.phoneHref}>{siteConfig.phone}</a><a className="footer-link" href={siteConfig.telegramHref} target="_blank" rel="noreferrer">{siteConfig.telegram}</a><p>{siteConfig.city}</p><p>{siteConfig.workingHours}</p></div></div>
+          <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/38">Контакты</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href={siteConfig.phoneHref}>{siteConfig.phone}</a><a className="footer-link" href={siteConfig.telegramHref} target="_blank" rel="noreferrer">Telegram: {siteConfig.telegram}</a><p>{siteConfig.city}</p><p>{siteConfig.workingHours}</p></div></div>
           <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/38">Информация</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href="#products">Что изготавливаем</a><a className="footer-link" href="#price">Расчёт стоимости</a><Link className="footer-link" href="/privacy">Политика конфиденциальности</Link></div></div>
         </div>
       </footer>
