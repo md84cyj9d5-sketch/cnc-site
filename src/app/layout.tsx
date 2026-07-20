@@ -1,21 +1,42 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope, Roboto_Mono } from "next/font/google";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["cyrillic", "latin"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const robotoMono = Roboto_Mono({
+  variable: "--font-roboto-mono",
+  subsets: ["cyrillic", "latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Фрезеровка ЧПУ в Ярославле — дерево и пластик на заказ",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: "ЧПУ-фрезеровка дерева и пластика в Ярославле",
+    template: `%s · ${siteConfig.name}`,
+  },
   description:
-    "Фрезеровка ЧПУ в Ярославле и области: фрезеровка дерева и пластика, изготовление деталей на заказ по чертежу, эскизу или фотографии.",
+    "ЧПУ-фрезеровка фанеры, МДФ, массива дерева и пластика в Ярославле и области. Детали на заказ по чертежу, эскизу или фотографии.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "ru_RU",
+    url: "/",
+    siteName: siteConfig.name,
+    title: "ЧПУ-фрезеровка дерева и пластика в Ярославле",
+    description: "Детали и изделия из фанеры, МДФ, массива дерева и пластика по чертежу, эскизу или фотографии.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ЧПУ-фрезеровка дерева и пластика в Ярославле",
+    description: "Изготовление деталей и изделий на ЧПУ для частных заказчиков в Ярославле и области.",
+  },
 };
 
 export default function RootLayout({
@@ -26,9 +47,9 @@ export default function RootLayout({
   return (
     <html
       lang="ru"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${manrope.variable} ${robotoMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full">{children}</body>
     </html>
   );
 }

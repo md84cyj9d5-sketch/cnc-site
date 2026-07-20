@@ -1,305 +1,198 @@
-import OrderForm from "@/components/OrderForm";
 import Link from "next/link";
+import CncProcessVisual from "@/components/CncProcessVisual";
+import OrderForm from "@/components/OrderForm";
+import SectionHeading from "@/components/SectionHeading";
 import { siteConfig } from "@/config/site";
 
-const examples = [
-  {
-    title: "Фасады мебели",
-    description: "Фасады из МДФ, фанеры и массива с узорами, пазами и рельефом.",
-    mark: "▱",
-  },
-  {
-    title: "Декоративные панели",
-    description: "Резные панели, решётки и элементы декора для дома и интерьера.",
-    mark: "◇",
-  },
-  {
-    title: "Таблички и вывески",
-    description: "Адресные таблички, надписи, буквы и логотипы из дерева или пластика.",
-    mark: "А",
-  },
-  {
-    title: "Детали по чертежу или фото",
-    description: "Изготовление деталей на заказ по размерам, эскизу или фотографии.",
-    mark: "✦",
-  },
-];
+const benefits = [
+  ["01", "Работаем по вашим данным", "Подойдёт чертёж, эскиз, фотография или понятное описание задачи."],
+  ["02", "Помогаем с файлом", "Проверим исходные данные и подскажем, что нужно подготовить для станка."],
+  ["03", "Берём единичные изделия", "Можно обратиться за одной деталью, прототипом или небольшим тиражом."],
+  ["04", "Точная обработка", "Повторяем заданные контуры, отверстия, пазы, выборки и рельеф."],
+  ["05", "Расчёт до начала работ", "Сначала уточняем параметры, затем сообщаем стоимость и условия изготовления."],
+  ["06", "Файл прямо в заявке", "Чертёж или эскиз можно прикрепить к форме — он придёт вместе с описанием."],
+] as const;
+
+const products = [
+  ["Панели", "Декоративные панели", "Резные экраны, решётки и рельефные элементы для интерьера."],
+  ["Знаки", "Вывески и надписи", "Таблички, буквы, адресные знаки и элементы оформления."],
+  ["Мебель", "Мебельные детали", "Фасады, вставки, полки, накладки и детали нестандартной формы."],
+  ["Интерьер", "Элементы интерьера", "Декор, стеновые элементы и детали для частных проектов."],
+  ["Оснастка", "Шаблоны и формы", "Шаблоны, лекала, матрицы и вспомогательные элементы."],
+  ["По файлу", "Детали по чертежам", "Индивидуальные детали по размерам, эскизу или готовой модели."],
+] as const;
 
 const materials = [
-  {
-    title: "Фанера",
-    description: "Для декора, макетов, коробов и мебельных деталей.",
-  },
-  {
-    title: "МДФ",
-    description: "Для фасадов, панелей, вывесок и элементов интерьера.",
-  },
-  {
-    title: "Массив дерева",
-    description: "Для деталей, надписей и изделий с натуральной фактурой.",
-  },
-  {
-    title: "Пластик",
-    description: "Для табличек, шаблонов, панелей и технических деталей.",
-  },
-];
+  ["01", "Фанера", "Контурная резка, пазы, выборки и гравировка для декора и деталей."],
+  ["02", "МДФ", "Фасады, рельефные панели, накладки и элементы интерьера."],
+  ["03", "Массив дерева", "Детали и изделия, где важны натуральная фактура и выразительный рельеф."],
+  ["04", "Пластик", "Таблички, шаблоны, панели и технические детали разных форм."],
+] as const;
+
+const portfolio = ["Декоративная панель", "Мебельная деталь", "Вывеска или надпись"] as const;
 
 const steps = [
-  {
-    title: "Расскажите о задаче",
-    description: "Пришлите чертёж, эскиз, фотографию или опишите идею своими словами.",
-  },
-  {
-    title: "Согласуем детали",
-    description: "Уточним материал, размеры и количество, затем согласуем стоимость.",
-  },
-  {
-    title: "Изготовим заказ",
-    description: "После согласования подготовим изделие и договоримся о получении.",
-  },
-];
+  ["01", "Отправляете задачу", "Описываете изделие и прикладываете файл, эскиз или фотографию."],
+  ["02", "Уточняем детали", "Обсуждаем материал, размеры, количество и требования к обработке."],
+  ["03", "Делаем расчёт", "Сообщаем стоимость и условия изготовления до начала работ."],
+  ["04", "Изготавливаем", "Фрезеруем детали и договариваемся о передаче готового заказа."],
+] as const;
 
-const trustPoints = [
-  {
-    title: "По эскизу, фото или чертежу",
-    description: "Не обязательно готовить сложную документацию — начнём с того, что у вас есть.",
-  },
-  {
-    title: "Предварительное согласование",
-    description: "До начала работы уточним материал, размеры, количество и согласуем стоимость.",
-  },
-  {
-    title: "Точность изготовления",
-    description: "ЧПУ-обработка помогает точно повторять размеры, контуры, пазы и отверстия.",
-  },
-];
+const priceFactors = [
+  "Материал и его толщина",
+  "Габариты изделия",
+  "Сложность обработки",
+  "Длина траектории фрезы",
+  "Количество деталей",
+  "Подготовка макета",
+] as const;
+
+const buttonPrimary =
+  "inline-flex min-h-13 items-center justify-center gap-2 rounded-full bg-ink px-6 py-3 text-center text-sm font-semibold text-white shadow-[0_12px_28px_rgba(30,29,27,.16)] transition duration-200 hover:-translate-y-0.5 hover:bg-[#393733] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood";
+const buttonSecondary =
+  "inline-flex min-h-13 items-center justify-center gap-2 rounded-full border border-line bg-white px-6 py-3 text-center text-sm font-semibold text-ink transition duration-200 hover:border-[#b7aa99] hover:bg-[#faf8f4] active:bg-[#f1ede7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood";
+
+function Arrow() {
+  return <span aria-hidden="true">↗</span>;
+}
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f7f7f3] text-[#232323] font-sans">
-      <div className="mx-auto flex min-h-screen max-w-6xl flex-col gap-16 px-6 py-8 sm:gap-20 sm:px-10 sm:py-10 lg:px-16">
-        <section className="grid gap-10 rounded-[32px] border border-[#d9d9d4] bg-white/90 p-8 shadow-[0_30px_90px_rgba(35,35,35,0.08)] lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:p-14">
-          <div className="max-w-2xl">
-            <span className="inline-flex rounded-full border border-[#dee2db] bg-[#f2f5ef] px-4 py-1.5 text-sm font-semibold uppercase tracking-[0.18em] text-[#4a6b41]">
-              Ярославль и область · частные заказы
-            </span>
-            <h1 className="mt-6 text-4xl font-semibold leading-tight tracking-[-0.03em] text-[#111111] sm:text-5xl">
-              Фрезеровка дерева и пластика на ЧПУ
-            </h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#4d4d4b] sm:text-xl">
-              Изготовим точно по вашим размерам — от одной детали до небольшой серии.
-              Работаем с частными заказами в Ярославле и Ярославской области, поможем
-              превратить чертёж, эскиз или фотографию в готовое изделие.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href="#order"
-                className="inline-flex h-14 items-center justify-center rounded-full bg-[#4f7f3f] px-8 text-base font-semibold text-white shadow-[0_12px_28px_rgba(79,127,63,0.28)] transition hover:-translate-y-0.5 hover:bg-[#3e6b33] hover:shadow-[0_16px_32px_rgba(79,127,63,0.34)]"
-              >
-                Рассчитать стоимость заказа
-              </a>
-              <a
-                href="#examples"
-                className="inline-flex h-14 items-center justify-center rounded-full border border-[#bfc8b8] bg-[#f6f7f2] px-8 text-base font-semibold text-[#35582d] transition hover:bg-[#edf2e8]"
-              >
-                Посмотреть примеры
-              </a>
-            </div>
+    <div className="overflow-hidden bg-canvas text-ink">
+      <header className="sticky top-0 z-20 border-b border-line/80 bg-canvas/95 backdrop-blur-sm">
+        <div className="page-shell flex min-h-20 items-center justify-between gap-5">
+          <a href="#top" className="flex items-center gap-3 font-semibold tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood">
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-ink font-mono text-xs text-white">CNC</span>
+            <span className="hidden sm:block">Фрезеровка · Ярославль</span>
+            <span className="text-sm sm:hidden">Ярославль</span>
+          </a>
+          <nav className="hidden items-center gap-7 text-sm text-muted lg:flex" aria-label="Основная навигация">
+            <a className="nav-link" href="#products">Изделия</a>
+            <a className="nav-link" href="#materials">Материалы</a>
+            <a className="nav-link" href="#portfolio">Примеры</a>
+            <a className="nav-link" href="#process">Как работаем</a>
+          </nav>
+          <a href="#order" className={`${buttonPrimary} min-h-11 px-5 py-2.5`}>Отправить задачу</a>
+        </div>
+        <nav className="border-t border-line/70 lg:hidden" aria-label="Навигация по странице">
+          <div className="page-shell flex gap-5 overflow-x-auto py-3 text-sm text-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <a className="nav-link shrink-0" href="#products">Изделия</a>
+            <a className="nav-link shrink-0" href="#materials">Материалы</a>
+            <a className="nav-link shrink-0" href="#portfolio">Примеры</a>
+            <a className="nav-link shrink-0" href="#process">Как работаем</a>
+            <a className="nav-link shrink-0" href="#price">Стоимость</a>
           </div>
+        </nav>
+      </header>
 
-          <div className="rounded-[28px] border border-[#dce3d7] bg-[#f2f5ef] p-7 sm:p-8">
-            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#4a6b41]">
-              С чего можно начать
+      <main id="top">
+        <section className="page-shell grid gap-12 pb-20 pt-10 lg:grid-cols-[1.03fr_.97fr] lg:items-center lg:pb-28 lg:pt-16">
+          <div>
+            <p className="eyebrow"><span className="mr-2 inline-block h-2 w-2 rounded-full bg-wood" />Ярославль и Ярославская область</p>
+            <h1 className="mt-7 max-w-3xl text-balance text-[clamp(3rem,7vw,6.5rem)] font-semibold leading-[.94] tracking-[-0.065em]">
+              Фрезеровка дерева и пластика <span className="text-wood-dark">на ЧПУ</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-pretty text-lg leading-8 text-muted sm:text-xl">
+              Изготавливаем детали и изделия по чертежу, эскизу или фотографии. Поможем подготовить задачу — от одной детали до небольшой серии.
             </p>
-            <ul className="mt-6 space-y-4 text-base leading-7 text-[#3f493c]">
-              {[
-                "Готовый чертёж или файл",
-                "Эскиз с размерами",
-                "Фотография похожего изделия",
-                "Описание идеи своими словами",
-              ].map((item) => (
-                <li key={item} className="flex gap-3">
-                  <span
-                    aria-hidden="true"
-                    className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#4f7f3f] text-xs text-white"
-                  >
-                    ✓
-                  </span>
-                  <span>{item}</span>
-                </li>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <a href="#order" className={buttonPrimary}>Отправить на расчёт <Arrow /></a>
+              <a href="#products" className={buttonSecondary}>Что можем изготовить</a>
+            </div>
+            <dl className="mt-10 grid max-w-2xl grid-cols-2 gap-x-5 gap-y-6 border-t border-line pt-6 sm:grid-cols-4">
+              {[["Формат", "От 1 детали"], ["Основа", "Ваш файл или эскиз"], ["Материалы", "Дерево и пластик"], ["Связь", "Форма или Telegram"]].map(([term, value]) => (
+                <div key={term}><dt className="font-mono text-[.68rem] uppercase tracking-[.14em] text-faint">{term}</dt><dd className="mt-2 text-sm font-semibold leading-5">{value}</dd></div>
               ))}
-            </ul>
+            </dl>
           </div>
+          <CncProcessVisual />
         </section>
 
-        <section id="examples" className="scroll-mt-8">
-          <div className="max-w-2xl">
-            <p className="text-sm uppercase tracking-[0.3em] text-[#5a5a58]">
-              Изделия на заказ
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
-              Что изготавливаем
-            </h2>
-            <p className="mt-5 text-base leading-7 text-[#545454]">
-              Выполняем изготовление деталей на заказ для дома, мебели, ремонта и декора.
-              Если нужного изделия нет в списке, пришлите фото или опишите задачу.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {examples.map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[28px] border border-[#e2e4df] bg-white p-6 shadow-[0_12px_24px_rgba(0,0,0,0.05)]"
-              >
-                <div className="flex h-20 w-20 items-center justify-center rounded-[22px] bg-[#e4eade] text-3xl font-semibold text-[#4f7f3f]">
-                  {item.mark}
-                </div>
-                <h3 className="mt-6 text-xl font-semibold text-[#1c1c1a]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#61615f]">{item.description}</p>
+        <section className="border-y border-line bg-white">
+          <h2 className="sr-only">Преимущества работы с мастерской</h2>
+          <div className="page-shell grid gap-px bg-line md:grid-cols-2 xl:grid-cols-3">
+            {benefits.map(([number, title, description]) => (
+              <article key={number} className="bg-white py-7 md:px-7 xl:first:pl-0 xl:last:pr-0">
+                <div className="flex items-start gap-5"><span className="font-mono text-xs text-wood-dark">{number}</span><div><h3 className="text-lg font-semibold tracking-[-0.02em]">{title}</h3><p className="mt-2 text-sm leading-6 text-muted">{description}</p></div></div>
               </article>
             ))}
           </div>
         </section>
 
-        <section>
-          <div className="max-w-2xl">
-            <p className="text-sm uppercase tracking-[0.3em] text-[#5a5a58]">
-              Услуги и материалы
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
-              Фрезеровка дерева и пластика
-            </h2>
-            <p className="mt-5 text-base leading-7 text-[#545454]">
-              Фрезеровка дерева подходит для фасадов, декора и мебельных деталей, а
-              фрезеровка пластика — для табличек, шаблонов и технических элементов.
-              Вырезаем контуры, делаем пазы, отверстия, рельеф и надписи.
-            </p>
-          </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {materials.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-[24px] border border-[#e5e5e1] bg-[#fafbf8] p-6"
-              >
-                <h3 className="text-xl font-semibold text-[#161616]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#555555]">{item.description}</p>
-              </div>
+        <section id="products" className="page-shell section-space scroll-mt-24">
+          <SectionHeading eyebrow="Возможности" title="Что можем изготовить" description="Фрезеровка подходит и для функциональных деталей, и для аккуратного интерьерного декора. Если вашей задачи нет в списке — пришлите описание на расчёт." />
+          <div className="mt-12 grid gap-px overflow-hidden rounded-[2rem] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+            {products.map(([label, title, description], index) => (
+              <article key={title} className="min-h-0 bg-white p-7 sm:min-h-64 sm:p-8">
+                <div className="flex items-center justify-between"><span className="rounded-full border border-line px-3 py-1 font-mono text-[.68rem] uppercase tracking-[.12em] text-muted">{label}</span><span className="font-mono text-xs text-faint">0{index + 1}</span></div>
+                <h3 className="mt-9 text-2xl font-semibold tracking-[-0.035em] sm:mt-14">{title}</h3><p className="mt-3 max-w-sm text-sm leading-6 text-muted">{description}</p>
+              </article>
             ))}
           </div>
         </section>
 
-        <section className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-          <div>
-            <p className="text-sm uppercase tracking-[0.3em] text-[#5a5a58]">
-              Как проходит заказ
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold leading-tight text-[#111111] sm:text-4xl">
-              От идеи до готовой детали
-            </h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-[#545454]">
-              Начать можно с любой информации, которая у вас уже есть.
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-3">
-            {steps.map((item, index) => (
-              <div
-                key={item.title}
-                className="rounded-[24px] border border-[#dcdcd8] bg-white p-6 shadow-[0_12px_30px_rgba(29,29,29,0.06)]"
-              >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#e8f1de] text-lg font-semibold text-[#3e6b33]">
-                  {index + 1}
-                </div>
-                <h3 className="mt-5 text-xl font-semibold text-[#161616]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#5f5f5d]">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-[32px] border border-[#dde1d8] bg-white p-8 shadow-[0_30px_80px_rgba(35,35,35,0.06)] sm:p-10">
-          <p className="text-sm uppercase tracking-[0.28em] text-[#5a5a58]">
-            Почему нам доверяют
-          </p>
-          <h2 className="mt-3 max-w-2xl text-3xl font-semibold text-[#111111] sm:text-4xl">
-            Понятный результат до начала работы
-          </h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {trustPoints.map((item) => (
-              <div key={item.title} className="rounded-[24px] bg-[#f6f7f2] p-6">
-                <h3 className="text-lg font-semibold text-[#1d1d1b]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-[#575755]">{item.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section id="order" className="scroll-mt-8 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <div className="space-y-6 rounded-[32px] border border-[#d9d9d4] bg-[#fafbf8] p-8 sm:p-10">
-            <p className="text-sm uppercase tracking-[0.28em] text-[#5a5a58]">
-              Заявка на заказ
-            </p>
-            <h2 className="text-3xl font-semibold text-[#111111] sm:text-4xl">
-              Расскажите, что нужно изготовить
-            </h2>
-            <p className="max-w-xl text-base leading-7 text-[#575755]">
-              Заполните основные поля и приложите файл, если он есть. Детали можно уточнить
-              после первого ответа.
-            </p>
-            <ul className="space-y-3 text-sm leading-6 text-[#4f4f4d]">
-              <li>• Подойдёт чертёж, эскиз или фотография.</li>
-              <li>• Если материал не выбран, обсудим подходящий вариант.</li>
-              <li>• Стоимость согласуем до начала работы.</li>
-            </ul>
-          </div>
-          <OrderForm />
-        </section>
-
-        <section className="rounded-[32px] border border-[#d9d9d4] bg-white p-8 shadow-[0_20px_50px_rgba(35,35,35,0.05)] sm:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-            <div>
-              <p className="text-sm uppercase tracking-[0.28em] text-[#5a5a58]">Контакты</p>
-              <h2 className="mt-3 text-3xl font-semibold text-[#111111] sm:text-4xl">
-                Фрезеровка ЧПУ в Ярославле и области
-              </h2>
-              <p className="mt-5 max-w-xl text-base leading-7 text-[#575755]">
-                Свяжитесь удобным способом или отправьте заявку выше, чтобы обсудить задачу.
-              </p>
-            </div>
-            <div className="space-y-4 rounded-[28px] border border-[#e5e5e1] bg-[#f7f8f4] p-6">
-              <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Название</p>
-                <p className="mt-2 text-lg font-semibold text-[#222222]">{siteConfig.name}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Телефон</p>
-                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.phone}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Telegram</p>
-                <p className="mt-2 text-base font-semibold text-[#222222]">{siteConfig.telegram}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Город</p>
-                <p className="mt-2 text-base text-[#4a4a48]">{siteConfig.city}</p>
-              </div>
-              <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-[#5a5a58]">Режим работы</p>
-                <p className="mt-2 text-base text-[#4a4a48]">{siteConfig.workingHours}</p>
-              </div>
+        <section id="materials" className="bg-ink text-white scroll-mt-20">
+          <div className="page-shell section-space">
+            <SectionHeading inverse eyebrow="Материалы" title="Подбираем обработку под материал и задачу" description="Работаем с распространёнными листовыми материалами и массивом. Возможность обработки конкретной заготовки уточним до расчёта." />
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {materials.map(([number, title, description]) => (
+                <article key={number} className="relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[.045] p-7">
+                  <div className="absolute -right-8 -top-9 h-32 w-32 rounded-full border border-wood/20" /><span className="font-mono text-xs text-wood-light">{number}</span><h3 className="mt-16 text-2xl font-semibold sm:mt-24">{title}</h3><p className="mt-3 text-sm leading-6 text-white/65">{description}</p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
 
-        <footer className="flex flex-col gap-3 border-t border-[#d9d9d4] py-2 text-sm text-[#5f5f5d] sm:flex-row sm:items-center sm:justify-between">
-          <p>{siteConfig.name}</p>
-          <Link
-            href="/privacy"
-            className="font-medium text-[#35582d] underline decoration-[#9caf94] underline-offset-4 hover:text-[#294724]"
-          >
-            Политика конфиденциальности
-          </Link>
-        </footer>
-      </div>
-    </main>
+        <section id="portfolio" className="page-shell section-space scroll-mt-24">
+          <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between"><SectionHeading eyebrow="Примеры работ" title="Место для реальных проектов" description="Фотографии пока не добавлены. Карточки подготовлены так, чтобы позже заменить заглушки вашими снимками без перестройки раздела." /><a href="#order" className={`${buttonSecondary} shrink-0`}>Обсудить похожую задачу</a></div>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {portfolio.map((title, index) => (
+              <article key={title} className="overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)]">
+                <div className="placeholder-pattern relative aspect-[4/3] border-b border-line"><div className="absolute inset-6 rounded-2xl border border-dashed border-[#b9aa98]" /><div className="absolute bottom-7 left-7 rounded-full bg-white/90 px-3 py-1.5 font-mono text-[.65rem] uppercase tracking-[.12em] text-muted shadow-sm">Фото будет добавлено</div><span className="absolute right-8 top-7 font-mono text-xs text-wood-dark">0{index + 1}</span></div>
+                <div className="p-6"><h3 className="text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted">Временная карточка для фотографии и краткого описания выполненного заказа.</p></div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section id="process" className="border-y border-line bg-white scroll-mt-20">
+          <div className="page-shell section-space grid gap-12 lg:grid-cols-[.72fr_1.28fr] lg:gap-20">
+            <SectionHeading eyebrow="Порядок работы" title="От задачи до готовой детали — четыре шага" description="Не обязательно разбираться в технологии. Начните с того, что у вас уже есть, а технические параметры уточним вместе." />
+            <ol className="border-t border-line">
+              {steps.map(([number, title, description]) => (
+                <li key={number} className="grid gap-3 border-b border-line py-7 sm:grid-cols-[3rem_12rem_1fr] sm:items-start"><span className="font-mono text-xs text-wood-dark">{number}</span><h3 className="font-semibold">{title}</h3><p className="text-sm leading-6 text-muted">{description}</p></li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        <section id="price" className="page-shell section-space grid gap-10 lg:grid-cols-[1fr_.9fr] lg:items-center">
+          <div><SectionHeading eyebrow="Расчёт стоимости" title="Цена зависит от параметров конкретной детали" description="У фрезеровки нет универсальной цены за изделие: на расчёт влияет материал, объём обработки и подготовка исходных данных. Пришлите задачу — уточним параметры и сделаем предварительную оценку." /><a href="#order" className={`${buttonPrimary} mt-8`}>Перейти к форме расчёта <Arrow /></a></div>
+          <ul className="grid gap-px overflow-hidden rounded-[1.75rem] border border-line bg-line sm:grid-cols-2">
+            {priceFactors.map((factor, index) => <li key={factor} className="flex min-h-28 items-start gap-4 bg-white p-6"><span className="font-mono text-xs text-wood-dark">0{index + 1}</span><span className="font-semibold leading-6">{factor}</span></li>)}
+          </ul>
+        </section>
+
+        <section id="order" className="scroll-mt-20 bg-[#e8e1d7]">
+          <div className="page-shell section-space grid gap-10 lg:grid-cols-[.76fr_1.24fr] lg:gap-16">
+            <div className="lg:sticky lg:top-28 lg:self-start"><SectionHeading eyebrow="Заявка на расчёт" title="Расскажите, что нужно изготовить" description="Заполните основные поля и приложите файл, если он есть. Заявка и файл будут отправлены мастеру через Telegram." /><ul className="mt-8 space-y-3 text-sm leading-6 text-muted"><li>— Подойдёт чертёж, эскиз или фотография</li><li>— Материал можно уточнить после отправки</li><li>— Стоимость согласуем до начала работы</li></ul></div>
+            <OrderForm />
+          </div>
+        </section>
+
+        <section className="bg-ink py-16 text-white sm:py-20">
+          <div className="page-shell flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between"><div><p className="eyebrow text-wood-light">Удобнее написать напрямую?</p><h2 className="mt-4 max-w-3xl text-balance text-3xl font-semibold leading-tight tracking-[-0.045em] sm:text-5xl">Обсудите задачу с мастером в Telegram</h2></div><a href={siteConfig.telegramHref} target="_blank" rel="noreferrer" className="inline-flex min-h-13 shrink-0 items-center justify-center rounded-full bg-wood px-6 py-3 text-sm font-semibold text-[#211b15] transition hover:bg-wood-light focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white">Открыть Telegram <Arrow /></a></div>
+        </section>
+      </main>
+
+      <footer className="bg-[#171816] py-12 text-white/62">
+        <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
+          <div><p className="text-lg font-semibold text-white">CNC · Ярославль</p><p className="mt-3 max-w-sm text-sm leading-6">ЧПУ-фрезеровка фанеры, МДФ, массива дерева и пластика для частных заказчиков.</p></div>
+          <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/65">Контакты</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href={siteConfig.phoneHref}>Телефон: {siteConfig.phone}</a><a className="footer-link" href={siteConfig.telegramHref} target="_blank" rel="noreferrer">Telegram: {siteConfig.telegram}</a><a className="footer-link" href={siteConfig.mapHref} target="_blank" rel="noreferrer">{siteConfig.city}</a><p>{siteConfig.workingHours}</p></div></div>
+          <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/65">Информация</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href="#products">Что изготавливаем</a><a className="footer-link" href="#price">Расчёт стоимости</a><Link className="footer-link" href="/privacy">Политика конфиденциальности</Link></div></div>
+        </div>
+      </footer>
+    </div>
   );
 }
