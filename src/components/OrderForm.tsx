@@ -2,8 +2,24 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { upload } from "@vercel/blob/client";
 
 type Status = "idle" | "pending" | "success" | "error";
+const MAX_FILE_SIZE = 20 * 1024 * 1024;
+
+async function readResponse(response: Response) {
+  const text = await response.text();
+
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    if (response.status === 413) {
+      return { error: "Файл слишком большой для отправки. Максимальный размер — 20 МБ." };
+    }
+
+    return { error: response.ok ? "Некорректный ответ сервера" : "Сервер временно недоступен" };
+  }
+}
 
 export default function OrderForm() {
   const [status, setStatus] = useState<Status>("idle");
@@ -17,14 +33,31 @@ export default function OrderForm() {
     setMessage("");
 
     const formData = new FormData(form);
+    const fileEntry = formData.get("file");
 
     try {
+      if (fileEntry instanceof File && fileEntry.name) {
+        if (fileEntry.size > MAX_FILE_SIZE) {
+          throw new Error("Максимальный размер файла — 20 МБ.");
+        }
+
+        const blob = await upload(`orders/${fileEntry.name}`, fileEntry, {
+          access: "public",
+          handleUploadUrl: "/api/blob/upload",
+        });
+
+        formData.set("fileUrl", blob.url);
+        formData.set("fileName", fileEntry.name);
+      }
+
+      formData.delete("file");
+
       const response = await fetch("/api/order", {
         method: "POST",
         body: formData,
       });
 
-      const data = await response.json();
+      const data = await readResponse(response);
 
       if (!response.ok) {
         throw new Error(data?.error || "Ошибка отправки заявки");

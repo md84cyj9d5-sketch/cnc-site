@@ -12,8 +12,6 @@ const ALLOWED_EXTENSIONS = [
   ".stl",
   ".zip",
 ];
-const MAX_FILE_SIZE = 20 * 1024 * 1024;
-
 function getEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -59,23 +57,21 @@ async function sendTelegramMessage(text: string) {
   }
 }
 
-async function sendTelegramDocument(file: File) {
-  const token = getEnv("TELEGRAM_BOT_TOKEN");
-  const chatId = getEnv("TELEGRAM_CHAT_ID");
-  const url = `https://api.telegram.org/bot${token}/sendDocument`;
+function getBlobUrl(value: FormDataEntryValue | null): string | null {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
 
-  const formData = new FormData();
-  formData.append("chat_id", chatId);
-  formData.append("document", file, file.name);
+  try {
+    const url = new URL(value);
+    const isVercelBlob =
+      url.protocol === "https:" &&
+      (url.hostname.endsWith(".public.blob.vercel-storage.com") ||
+        url.hostname.endsWith(".blob.vercel-storage.com"));
 
-  const response = await fetch(url, {
-    method: "POST",
-    body: formData,
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Telegram sendDocument failed: ${response.status} ${body}`);
+    return isVercelBlob ? url.toString() : null;
+  } catch {
+    return null;
   }
 }
 
@@ -94,7 +90,8 @@ export async function POST(request: NextRequest) {
   const quantity = formData.get("quantity") || "Не указано";
   const sourceMaterial = formData.get("sourceMaterial") || "Не указано";
   const description = formData.get("description");
-  const file = formData.get("file");
+  const fileUrl = getBlobUrl(formData.get("fileUrl"));
+  const fileName = formData.get("fileName");
 
   if (!name || typeof name !== "string" || !name.trim()) {
     return NextResponse.json({ error: "Поле имя обязательно" }, { status: 400 });
@@ -108,19 +105,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Поле описание заказа обязательно" }, { status: 400 });
   }
 
-  let documentFile: File | null = null;
-
-  if (file && file instanceof File && file.name) {
-    const extension = getExtension(file.name);
+  if (fileName && typeof fileName === "string" && fileName.trim()) {
+    const extension = getExtension(fileName);
     if (!ALLOWED_EXTENSIONS.includes(extension)) {
       return NextResponse.json({ error: `Недопустимый формат файла: ${extension}` }, { status: 400 });
     }
 
-    if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "Максимальный размер файла 20 МБ" }, { status: 400 });
+    if (!fileUrl) {
+      return NextResponse.json({ error: "Не удалось подтвердить загруженный файл" }, { status: 400 });
     }
-
-    documentFile = file;
   }
 
   const message = [
@@ -133,13 +126,13 @@ export async function POST(request: NextRequest) {
     `<b>Количество деталей:</b> ${formatTelegramValue(quantity)}`,
     `<b>У клиента есть:</b> ${formatTelegramValue(sourceMaterial)}`,
     `<b>Описание:</b> ${formatTelegramValue(description)}`,
+    fileUrl
+      ? `<b>Файл:</b> <a href="${fileUrl}">${formatTelegramValue(fileName)}</a>`
+      : `<b>Файл:</b> Не приложен`,
   ].join("\n");
 
   try {
     await sendTelegramMessage(message);
-    if (documentFile) {
-      await sendTelegramDocument(documentFile);
-    }
   } catch (error) {
     const errorText = error instanceof Error ? error.message : "Ошибка отправки в Telegram";
     return NextResponse.json({ error: errorText }, { status: 500 });
