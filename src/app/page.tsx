@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CncProcessVisual from "@/components/CncProcessVisual";
 import OrderForm from "@/components/OrderForm";
+import PortfolioGallery from "@/components/PortfolioGallery";
 import SectionHeading from "@/components/SectionHeading";
 import { siteConfig } from "@/config/site";
 
@@ -27,9 +28,27 @@ const materials = [
   ["02", "МДФ", "Фасады, рельефные панели, накладки и элементы интерьера."],
   ["03", "Массив дерева", "Детали и изделия, где важны натуральная фактура и выразительный рельеф."],
   ["04", "Пластик", "Таблички, шаблоны, панели и технические детали разных форм."],
+  ["05", "Цветной металл", "Гравировка декоративных элементов по подготовленному макету."],
 ] as const;
 
-const portfolio = ["Декоративная панель", "Мебельная деталь", "Вывеска или надпись"] as const;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["LocalBusiness", "ProfessionalService"],
+  name: siteConfig.name,
+  url: siteConfig.url,
+  telephone: siteConfig.phone,
+  description: "ЧПУ-фрезеровка дерева и пластика, изготовление декоративных элементов, реставрация изделий и гравировка цветного металла.",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: siteConfig.streetAddress,
+    addressLocality: "Ярославль",
+    addressRegion: siteConfig.region,
+    addressCountry: "RU",
+  },
+  areaServed: ["Ярославль", siteConfig.region],
+  openingHours: "Mo-Fr 09:00-18:00",
+  sameAs: [siteConfig.telegramHref],
+};
 
 const steps = [
   ["01", "Отправляете задачу", "Описываете изделие и прикладываете файл, эскиз или фотографию."],
@@ -58,7 +77,11 @@ function Arrow() {
 
 export default function Home() {
   return (
-    <div className="overflow-hidden bg-canvas text-ink">
+    <div className="bg-canvas text-ink">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       <header className="sticky top-0 z-20 border-b border-line/80 bg-canvas/95 backdrop-blur-sm">
         <div className="page-shell flex min-h-20 items-center justify-between gap-5">
           <a href="#top" className="flex items-center gap-3 font-semibold tracking-[-0.02em] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood">
@@ -93,14 +116,14 @@ export default function Home() {
               Фрезеровка дерева и пластика <span className="text-wood-dark">на ЧПУ</span>
             </h1>
             <p className="mt-7 max-w-2xl text-pretty text-lg leading-8 text-muted sm:text-xl">
-              Изготавливаем детали и изделия по чертежу, эскизу или фотографии. Поможем подготовить задачу — от одной детали до небольшой серии.
+              Фрезеруем дерево и пластик, гравируем цветной металл по чертежу, эскизу или фотографии. Поможем подготовить задачу — от одной детали до небольшой серии.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <a href="#order" className={buttonPrimary}>Отправить на расчёт <Arrow /></a>
               <a href="#products" className={buttonSecondary}>Что можем изготовить</a>
             </div>
             <dl className="mt-10 grid max-w-2xl grid-cols-2 gap-x-5 gap-y-6 border-t border-line pt-6 sm:grid-cols-4">
-              {[["Формат", "От 1 детали"], ["Основа", "Ваш файл или эскиз"], ["Материалы", "Дерево и пластик"], ["Связь", "Форма или Telegram"]].map(([term, value]) => (
+              {[["Формат", "От 1 детали"], ["Основа", "Ваш файл или эскиз"], ["Материалы", "Дерево, пластик, металл"], ["Связь", "Форма или Telegram"]].map(([term, value]) => (
                 <div key={term}><dt className="font-mono text-[.68rem] uppercase tracking-[.14em] text-faint">{term}</dt><dd className="mt-2 text-sm font-semibold leading-5">{value}</dd></div>
               ))}
             </dl>
@@ -119,7 +142,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="products" className="page-shell section-space scroll-mt-24">
+        <section id="products" className="page-shell section-space scroll-mt-36 lg:scroll-mt-24">
           <SectionHeading eyebrow="Возможности" title="Что можем изготовить" description="Фрезеровка подходит и для функциональных деталей, и для аккуратного интерьерного декора. Если вашей задачи нет в списке — пришлите описание на расчёт." />
           <div className="mt-12 grid gap-px overflow-hidden rounded-[2rem] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
             {products.map(([label, title, description], index) => (
@@ -131,10 +154,10 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="materials" className="bg-ink text-white scroll-mt-20">
+        <section id="materials" className="scroll-mt-36 bg-ink text-white lg:scroll-mt-24">
           <div className="page-shell section-space">
-            <SectionHeading inverse eyebrow="Материалы" title="Подбираем обработку под материал и задачу" description="Работаем с распространёнными листовыми материалами и массивом. Возможность обработки конкретной заготовки уточним до расчёта." />
-            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <SectionHeading inverse eyebrow="Материалы" title="Подбираем обработку под материал и задачу" description="Фрезеруем листовые материалы и массив, выполняем гравировку цветного металла. Возможность обработки конкретной заготовки уточним до расчёта." />
+            <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
               {materials.map(([number, title, description]) => (
                 <article key={number} className="relative overflow-hidden rounded-[1.75rem] border border-white/12 bg-white/[.045] p-7">
                   <div className="absolute -right-8 -top-9 h-32 w-32 rounded-full border border-wood/20" /><span className="font-mono text-xs text-wood-light">{number}</span><h3 className="mt-16 text-2xl font-semibold sm:mt-24">{title}</h3><p className="mt-3 text-sm leading-6 text-white/65">{description}</p>
@@ -144,19 +167,9 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="portfolio" className="page-shell section-space scroll-mt-24">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between"><SectionHeading eyebrow="Примеры работ" title="Место для реальных проектов" description="Фотографии пока не добавлены. Карточки подготовлены так, чтобы позже заменить заглушки вашими снимками без перестройки раздела." /><a href="#order" className={`${buttonSecondary} shrink-0`}>Обсудить похожую задачу</a></div>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {portfolio.map((title, index) => (
-              <article key={title} className="overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)]">
-                <div className="placeholder-pattern relative aspect-[4/3] border-b border-line"><div className="absolute inset-6 rounded-2xl border border-dashed border-[#b9aa98]" /><div className="absolute bottom-7 left-7 rounded-full bg-white/90 px-3 py-1.5 font-mono text-[.65rem] uppercase tracking-[.12em] text-muted shadow-sm">Фото будет добавлено</div><span className="absolute right-8 top-7 font-mono text-xs text-wood-dark">0{index + 1}</span></div>
-                <div className="p-6"><h3 className="text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted">Временная карточка для фотографии и краткого описания выполненного заказа.</p></div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <PortfolioGallery />
 
-        <section id="process" className="border-y border-line bg-white scroll-mt-20">
+        <section id="process" className="scroll-mt-36 border-y border-line bg-white lg:scroll-mt-24">
           <div className="page-shell section-space grid gap-12 lg:grid-cols-[.72fr_1.28fr] lg:gap-20">
             <SectionHeading eyebrow="Порядок работы" title="От задачи до готовой детали — четыре шага" description="Не обязательно разбираться в технологии. Начните с того, что у вас уже есть, а технические параметры уточним вместе." />
             <ol className="border-t border-line">
@@ -167,14 +180,14 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="price" className="page-shell section-space grid gap-10 lg:grid-cols-[1fr_.9fr] lg:items-center">
+        <section id="price" className="page-shell section-space grid scroll-mt-36 gap-10 lg:grid-cols-[1fr_.9fr] lg:items-center lg:scroll-mt-24">
           <div><SectionHeading eyebrow="Расчёт стоимости" title="Цена зависит от параметров конкретной детали" description="У фрезеровки нет универсальной цены за изделие: на расчёт влияет материал, объём обработки и подготовка исходных данных. Пришлите задачу — уточним параметры и сделаем предварительную оценку." /><a href="#order" className={`${buttonPrimary} mt-8`}>Перейти к форме расчёта <Arrow /></a></div>
           <ul className="grid gap-px overflow-hidden rounded-[1.75rem] border border-line bg-line sm:grid-cols-2">
             {priceFactors.map((factor, index) => <li key={factor} className="flex min-h-28 items-start gap-4 bg-white p-6"><span className="font-mono text-xs text-wood-dark">0{index + 1}</span><span className="font-semibold leading-6">{factor}</span></li>)}
           </ul>
         </section>
 
-        <section id="order" className="scroll-mt-20 bg-[#e8e1d7]">
+        <section id="order" className="scroll-mt-36 bg-[#e8e1d7] lg:scroll-mt-24">
           <div className="page-shell section-space grid gap-10 lg:grid-cols-[.76fr_1.24fr] lg:gap-16">
             <div className="lg:sticky lg:top-28 lg:self-start"><SectionHeading eyebrow="Заявка на расчёт" title="Расскажите, что нужно изготовить" description="Заполните основные поля и приложите файл, если он есть. Заявка и файл будут отправлены мастеру через Telegram." /><ul className="mt-8 space-y-3 text-sm leading-6 text-muted"><li>— Подойдёт чертёж, эскиз или фотография</li><li>— Материал можно уточнить после отправки</li><li>— Стоимость согласуем до начала работы</li></ul></div>
             <OrderForm />
@@ -188,7 +201,7 @@ export default function Home() {
 
       <footer className="bg-[#171816] py-12 text-white/62">
         <div className="page-shell grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
-          <div><p className="text-lg font-semibold text-white">CNC · Ярославль</p><p className="mt-3 max-w-sm text-sm leading-6">ЧПУ-фрезеровка фанеры, МДФ, массива дерева и пластика для частных заказчиков.</p></div>
+          <div><p className="text-lg font-semibold text-white">CNC · Ярославль</p><p className="mt-3 max-w-sm text-sm leading-6">ЧПУ-фрезеровка фанеры, МДФ, массива дерева и пластика, гравировка цветного металла для частных заказчиков.</p></div>
           <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/65">Контакты</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href={siteConfig.phoneHref}>Телефон: {siteConfig.phone}</a><a className="footer-link" href={siteConfig.telegramHref} target="_blank" rel="noreferrer">Telegram: {siteConfig.telegram}</a><a className="footer-link" href={siteConfig.mapHref} target="_blank" rel="noreferrer">{siteConfig.city}</a><p>{siteConfig.workingHours}</p></div></div>
           <div><p className="font-mono text-[.68rem] uppercase tracking-[.16em] text-white/65">Информация</p><div className="mt-4 space-y-2 text-sm"><a className="footer-link" href="#products">Что изготавливаем</a><a className="footer-link" href="#price">Расчёт стоимости</a><Link className="footer-link" href="/privacy">Политика конфиденциальности</Link></div></div>
         </div>

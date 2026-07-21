@@ -38,7 +38,6 @@ body { margin: 0; background: var(--canvas); color: var(--ink); font-family: var
 .footer-link { display: block; width: fit-content; transition: color 180ms ease; }
 .footer-link:hover { color: white; }
 .cnc-grid { background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px); background-size: 34px 34px; }
-.placeholder-pattern { background-color: #eae3d9; background-image: linear-gradient(135deg, rgba(147,101,56,.08) 25%, transparent 25%), linear-gradient(225deg, rgba(147,101,56,.08) 25%, transparent 25%), linear-gradient(45deg, rgba(147,101,56,.08) 25%, transparent 25%), linear-gradient(315deg, rgba(147,101,56,.08) 25%, #eae3d9 25%); background-position: 18px 0, 18px 0, 0 0, 0 0; background-size: 36px 36px; background-repeat: repeat; }
 
 @media (min-width: 640px) { .page-shell { width: min(100% - 3rem, 80rem); } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
