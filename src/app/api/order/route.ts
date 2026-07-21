@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { del } from "@vercel/blob";
 import {
   isAllowedValue,
   isContactMethod,
@@ -8,6 +9,7 @@ import {
   SOURCE_MATERIALS,
 } from "@/lib/orderValidation";
 import { consumeRateLimit, getClientIp } from "@/lib/rateLimit";
+import { isSameOriginRequest } from "@/lib/requestSecurity";
 
 const ALLOWED_EXTENSIONS = [
   ".pdf",
@@ -89,7 +91,19 @@ function getBlobUrl(value: FormDataEntryValue | null): string | null {
   }
 }
 
+async function deleteUploadedFile(url: string) {
+  try {
+    await del(url);
+  } catch (error) {
+    console.error("Failed to delete an undelivered order file", error);
+  }
+}
+
 export async function POST(request: NextRequest) {
+  if (!isSameOriginRequest(request)) {
+    return NextResponse.json({ error: "Запрос отклонён" }, { status: 403 });
+  }
+
   const rateLimit = consumeRateLimit(`order:${getClientIp(request)}`, 6, 10 * 60 * 1000);
   if (!rateLimit.allowed) {
     return NextResponse.json(
@@ -203,6 +217,7 @@ export async function POST(request: NextRequest) {
   try {
     await sendTelegramMessage(message);
   } catch (error) {
+    if (fileUrl) await deleteUploadedFile(fileUrl);
     console.error("Telegram order delivery failed", error);
     return NextResponse.json(
       { error: "Не удалось отправить заявку. Попробуйте позже или напишите нам в Telegram." },

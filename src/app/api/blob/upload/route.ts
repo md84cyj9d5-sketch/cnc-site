@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { consumeRateLimit, getClientIp } from "@/lib/rateLimit";
+import { isSameOriginRequest } from "@/lib/requestSecurity";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const ALLOWED_CONTENT_TYPES = [
@@ -37,6 +38,10 @@ export async function POST(request: Request): Promise<NextResponse> {
       body,
       request,
       onBeforeGenerateToken: async (pathname) => {
+        if (!isSameOriginRequest(request)) {
+          throw new Error("Запрос отклонён");
+        }
+
         if (!pathname.startsWith("orders/")) {
           throw new Error("Недопустимый путь загрузки");
         }

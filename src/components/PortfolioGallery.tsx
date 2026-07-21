@@ -67,26 +67,53 @@ const buttonPrimary =
 export default function PortfolioGallery() {
   const [showAll, setShowAll] = useState(false);
   const [selected, setSelected] = useState<{ projectIndex: number; imageIndex: number } | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedElementRef = useRef<HTMLElement | null>(null);
   const visibleProjects = showAll ? projects : projects.slice(0, 6);
+  const isOpen = selected !== null;
 
   useEffect(() => {
-    if (!selected) return;
+    if (!isOpen) return;
 
     const previousOverflow = document.body.style.overflow;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSelected(null);
+    const handleDialogKeys = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setSelected(null);
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+
+      const focusableElements = Array.from(
+        dialogRef.current.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => element.getClientRects().length > 0);
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements.at(-1);
+      if (!firstElement || !lastElement) return;
+
+      if (event.shiftKey && document.activeElement === firstElement) {
+        event.preventDefault();
+        lastElement.focus();
+      } else if (!event.shiftKey && document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
     };
 
     document.body.style.overflow = "hidden";
-    document.addEventListener("keydown", closeOnEscape);
+    document.addEventListener("keydown", handleDialogKeys);
     closeButtonRef.current?.focus();
 
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", closeOnEscape);
+      document.removeEventListener("keydown", handleDialogKeys);
+      lastFocusedElementRef.current?.focus();
     };
-  }, [selected]);
+  }, [isOpen]);
 
   const currentProject = selected ? projects[selected.projectIndex] : null;
   const currentImage = currentProject && selected ? currentProject.images[selected.imageIndex] : null;
@@ -97,8 +124,13 @@ export default function PortfolioGallery() {
     setSelected({ ...selected, imageIndex: nextIndex });
   }
 
+  function openProject(projectIndex: number) {
+    lastFocusedElementRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setSelected({ projectIndex, imageIndex: 0 });
+  }
+
   return (
-    <section id="portfolio" className="page-shell section-space scroll-mt-24">
+    <section id="portfolio" className="page-shell section-space scroll-mt-36 lg:scroll-mt-24">
       <SectionHeading
         eyebrow="Портфолио"
         title="Примеры наших работ"
@@ -113,7 +145,7 @@ export default function PortfolioGallery() {
             <article key={project.title} className="group overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)]">
               <button
                 type="button"
-                onClick={() => setSelected({ projectIndex, imageIndex: 0 })}
+                onClick={() => openProject(projectIndex)}
                 className="relative block aspect-[3/4] w-full cursor-zoom-in overflow-hidden border-b border-line bg-[#e9e3da] text-left focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood"
                 aria-label={`Открыть фотографию: ${project.title}`}
               >
@@ -165,10 +197,12 @@ export default function PortfolioGallery() {
 
       {selected && currentProject && currentImage ? (
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#11110f]/95 p-3 sm:p-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="portfolio-dialog-title"
+          aria-describedby="portfolio-dialog-description"
           onMouseDown={(event) => {
             if (event.target === event.currentTarget) setSelected(null);
           }}
@@ -224,7 +258,7 @@ export default function PortfolioGallery() {
                 </>
               ) : null}
             </div>
-            <p className="mx-auto max-w-3xl py-3 text-center text-sm leading-6 text-white/68 sm:py-4">{currentProject.description}</p>
+            <p id="portfolio-dialog-description" className="mx-auto max-w-3xl py-3 text-center text-sm leading-6 text-white/68 sm:py-4">{currentProject.description}</p>
           </div>
         </div>
       ) : null}

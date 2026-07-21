@@ -66,7 +66,9 @@ export default function OrderForm() {
       if (fileEntry instanceof File && fileEntry.name) {
         if (fileEntry.size > MAX_FILE_SIZE) throw new Error("Максимальный размер файла — 20 МБ.");
 
-        const blob = await upload(`orders/${fileEntry.name}`, fileEntry, {
+        const extensionIndex = fileEntry.name.lastIndexOf(".");
+        const extension = extensionIndex >= 0 ? fileEntry.name.slice(extensionIndex).toLowerCase() : "";
+        const blob = await upload(`orders/${crypto.randomUUID()}${extension}`, fileEntry, {
           access: "public",
           handleUploadUrl: "/api/blob/upload",
         });
@@ -180,7 +182,7 @@ export default function OrderForm() {
         Прикрепить файл
         <input name="file" type="file" accept=".pdf,.jpg,.jpeg,.png,.dxf,.svg,.step,.stp,.stl,.zip" disabled={pending} aria-describedby="file-help" className="mt-2 block w-full cursor-pointer rounded-xl border border-dashed border-[#c7bcae] bg-[#f8f6f2] p-2 text-sm text-muted file:mr-4 file:min-h-11 file:cursor-pointer file:rounded-lg file:border-0 file:bg-ink file:px-4 file:text-sm file:font-semibold file:text-white hover:border-wood-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-wood" />
       </label>
-      <p id="file-help" className="mt-2 text-xs leading-5 text-muted">PDF, JPG, PNG, DXF, SVG, STEP, STP, STL или ZIP · до 20 МБ. Файл будет доступен мастеру по уникальной публичной ссылке.</p>
+      <p id="file-help" className="mt-2 text-xs leading-5 text-muted">PDF, JPG, PNG, DXF, SVG, STEP, STP, STL или ZIP · до 20 МБ. Файл передаётся мастеру по уникальной ссылке и хранится не более 30 дней.</p>
 
       <div className="mt-7 grid gap-4 sm:grid-cols-[minmax(190px,.8fr)_1.2fr] sm:items-center">
         <button type="submit" disabled={pending} className="inline-flex min-h-14 w-full items-center justify-center rounded-full bg-ink px-6 text-base font-semibold text-white shadow-[0_12px_28px_rgba(30,29,27,.16)] transition hover:-translate-y-0.5 hover:bg-[#393733] active:translate-y-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood disabled:cursor-wait disabled:transform-none disabled:opacity-65">
