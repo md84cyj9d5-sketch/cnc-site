@@ -36,6 +36,7 @@ const projects: readonly PortfolioProject[] = [
     images: [
       { src: "/images/portfolio/work-12.webp", alt: "Царские врата после реставрации с резным фоном" },
       { src: "/images/portfolio/work-05.webp", alt: "Резной фон для царских врат, изготовленный на ЧПУ" },
+      { src: "/images/portfolio/work-08.webp", alt: "Фрагмент резного фона для царских врат" },
     ],
   },
   {
@@ -52,11 +53,6 @@ const projects: readonly PortfolioProject[] = [
       { src: "/images/portfolio/work-03.webp", alt: "Гравированная деталь навершия для киота из цветного металла" },
       { src: "/images/portfolio/work-07.webp", alt: "Навершие в составе золочёной рамы киота" },
     ],
-  },
-  {
-    title: "Резная декоративная панель",
-    description: "Сквозная фрезеровка сложного орнамента из дерева.",
-    images: [{ src: "/images/portfolio/work-08.webp", alt: "Резная деревянная панель со сложным сквозным орнаментом" }],
   },
   {
     title: "Фрезеровка технической детали",
@@ -147,7 +143,7 @@ export default function PortfolioGallery() {
         })}
       </div>
 
-      {!showAll ? (
+      {!showAll && projects.length > 6 ? (
         <div className="mt-8 flex justify-center">
           <button
             type="button"
