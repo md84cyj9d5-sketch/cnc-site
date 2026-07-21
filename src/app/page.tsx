@@ -1,6 +1,7 @@
 import Link from "next/link";
 import CncProcessVisual from "@/components/CncProcessVisual";
 import OrderForm from "@/components/OrderForm";
+import PortfolioGallery from "@/components/PortfolioGallery";
 import SectionHeading from "@/components/SectionHeading";
 import { siteConfig } from "@/config/site";
 
@@ -28,8 +29,6 @@ const materials = [
   ["03", "Массив дерева", "Детали и изделия, где важны натуральная фактура и выразительный рельеф."],
   ["04", "Пластик", "Таблички, шаблоны, панели и технические детали разных форм."],
 ] as const;
-
-const portfolio = ["Декоративная панель", "Мебельная деталь", "Вывеска или надпись"] as const;
 
 const steps = [
   ["01", "Отправляете задачу", "Описываете изделие и прикладываете файл, эскиз или фотографию."],
@@ -144,17 +143,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section id="portfolio" className="page-shell section-space scroll-mt-24">
-          <div className="flex flex-col gap-7 lg:flex-row lg:items-end lg:justify-between"><SectionHeading eyebrow="Примеры работ" title="Место для реальных проектов" description="Фотографии пока не добавлены. Карточки подготовлены так, чтобы позже заменить заглушки вашими снимками без перестройки раздела." /><a href="#order" className={`${buttonSecondary} shrink-0`}>Обсудить похожую задачу</a></div>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {portfolio.map((title, index) => (
-              <article key={title} className="overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)]">
-                <div className="placeholder-pattern relative aspect-[4/3] border-b border-line"><div className="absolute inset-6 rounded-2xl border border-dashed border-[#b9aa98]" /><div className="absolute bottom-7 left-7 rounded-full bg-white/90 px-3 py-1.5 font-mono text-[.65rem] uppercase tracking-[.12em] text-muted shadow-sm">Фото будет добавлено</div><span className="absolute right-8 top-7 font-mono text-xs text-wood-dark">0{index + 1}</span></div>
-                <div className="p-6"><h3 className="text-lg font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted">Временная карточка для фотографии и краткого описания выполненного заказа.</p></div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <PortfolioGallery />
 
         <section id="process" className="border-y border-line bg-white scroll-mt-20">
           <div className="page-shell section-space grid gap-12 lg:grid-cols-[.72fr_1.28fr] lg:gap-20">
