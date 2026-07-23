@@ -8,11 +8,13 @@ type PortfolioImage = {
   src: string;
   alt: string;
   position?: string;
+  fit?: "cover" | "contain";
 };
 
 type PortfolioProject = {
   title: string;
   description: string;
+  fullDescription?: string;
   images: readonly PortfolioImage[];
 };
 
@@ -58,6 +60,38 @@ const projects: readonly PortfolioProject[] = [
     title: "Фрезеровка технической детали",
     description: "Изготовление детали из пластика по заданным размерам.",
     images: [{ src: "/images/portfolio/work-11.webp", alt: "Длинная техническая деталь из чёрного пластика после фрезеровки", position: "center 64%" }],
+  },
+  {
+    title: "Табличка с индивидуальной гравировкой",
+    description: "Изготовление металлической таблички с индивидуальной гравировкой для деревянного короба.",
+    fullDescription: "Подготовили макет и выполнили точную гравировку текста и декоративной рамки на металлической табличке. Табличка изготовлена по заданным размерам и установлена на деревянный короб. Особое внимание уделили читаемости мелкого текста, аккуратности линий и точной подгонке изделия.",
+    images: [
+      {
+        src: "/images/portfolio/work-13.jpg",
+        alt: "Деревянный короб с металлической табличкой",
+        fit: "contain",
+      },
+      {
+        src: "/images/portfolio/work-14.jpg",
+        alt: "Металлическая табличка с индивидуальной гравировкой крупным планом",
+      },
+    ],
+  },
+  {
+    title: "Резной деревянный стол",
+    description: "Декоративные резные элементы для деревянного стола, изготовленные методом ЧПУ-фрезеровки.",
+    fullDescription: "Изготовили декоративные резные элементы для деревянного стола. При обработке особое внимание уделили глубине рельефа, чистоте линий и сохранению деталей сложного растительного орнамента. Общая фотография показывает элементы на готовом изделии, а крупный план демонстрирует качество фрезеровки до финишной обработки.",
+    images: [
+      {
+        src: "/images/portfolio/work-15.jpg",
+        alt: "Деревянный стол с резными декоративными элементами",
+        fit: "contain",
+      },
+      {
+        src: "/images/portfolio/work-16.jpg",
+        alt: "Резной деревянный элемент после ЧПУ-фрезеровки крупным планом",
+      },
+    ],
   },
 ] as const;
 
@@ -142,7 +176,7 @@ export default function PortfolioGallery() {
           const cover = project.images[0];
 
           return (
-            <article key={project.title} className="group overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)]">
+            <article key={project.title} className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-line bg-white shadow-[0_18px_50px_rgba(39,34,29,.07)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_24px_60px_rgba(39,34,29,.11)]">
               <button
                 type="button"
                 onClick={() => openProject(projectIndex)}
@@ -154,7 +188,7 @@ export default function PortfolioGallery() {
                   alt={cover.alt}
                   fill
                   sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-                  className="object-cover transition duration-300 group-hover:scale-[1.02]"
+                  className={`${cover.fit === "contain" ? "object-contain" : "object-cover"} transition duration-300 group-hover:scale-[1.02]`}
                   style={{ objectPosition: cover.position ?? "center" }}
                 />
                 <span className="absolute bottom-4 right-4 rounded-full bg-ink/88 px-3 py-1.5 font-mono text-[.65rem] uppercase tracking-[.12em] text-white shadow-sm backdrop-blur-sm">
@@ -166,9 +200,17 @@ export default function PortfolioGallery() {
                   </span>
                 ) : null}
               </button>
-              <div className="p-6 sm:p-7">
-                <h3 className="text-xl font-semibold tracking-[-0.025em]">{project.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted">{project.description}</p>
+              <div className="flex flex-1 flex-col p-6 sm:p-7">
+                <h3 className="text-[1.35rem] font-semibold leading-7 tracking-[-0.025em]">{project.title}</h3>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted">{project.description}</p>
+                <button
+                  type="button"
+                  onClick={() => openProject(projectIndex)}
+                  className="mt-5 inline-flex min-h-11 items-center self-start rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink transition hover:border-[#b7aa99] hover:bg-[#faf8f4] active:bg-[#f1ede7] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-wood"
+                  aria-label={`Подробнее о проекте: ${project.title}`}
+                >
+                  Подробнее <span className="ml-2" aria-hidden="true">→</span>
+                </button>
               </div>
             </article>
           );
@@ -258,7 +300,7 @@ export default function PortfolioGallery() {
                 </>
               ) : null}
             </div>
-            <p id="portfolio-dialog-description" className="mx-auto max-w-3xl py-3 text-center text-sm leading-6 text-white/68 sm:py-4">{currentProject.description}</p>
+            <p id="portfolio-dialog-description" className="mx-auto max-w-3xl py-3 text-center text-sm leading-6 text-white/68 sm:py-4">{currentProject.fullDescription ?? currentProject.description}</p>
           </div>
         </div>
       ) : null}
